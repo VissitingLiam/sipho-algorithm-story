@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fbf6ec">
+<meta name="color-scheme" content="light">
+<title>Sipho’s Morning: An Algorithm Story</title>
+<!--
+  DIGD 521EC Task V - Group CLT - Topic B: Introduction to Algorithms & Flowcharts (Grade 8)
+  TODO: have a mother-tongue speaker (or the lecturer) check the isiZulu, Afrikaans and Sepedi glossary terms (see GLOSSARY below).
+-->
+<style>
+:root{
+  --ink:#1c2433; --paper:#fbf6ec; --card:#fffdf8; --tan:#e9dcc3; --sky:#fde3b8;
+  --sun:#e8590c; --sun-dark:#a63d05; --muted:#4b5262; --border:#1c2433; --focus:#0b5cd5;
+  --ok-bg:#e3f3e6; --ok-text:#0d4a1f; --ok-border:#2e7d32;
+  --bad-bg:#fbe6e3; --bad-text:#7a1212; --bad-border:#b3261e;
+  --warn-bg:#fff0c2; --warn-text:#5c3d00; --warn-border:#9a6700;
+  --ease:cubic-bezier(.23,1,.32,1); --ease-io:cubic-bezier(.77,0,.175,1);
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Atkinson Hyperlegible",Verdana,Arial,sans-serif;line-height:1.6}
+.wrap{max-width:46rem;margin:0 auto;padding:1rem}
+header.site{position:relative;overflow:hidden;min-height:11rem;margin:1rem 0 0;border:2px solid var(--ink);border-radius:18px;background:var(--sky);padding:1.25rem 1.5rem}
+header.site svg{position:absolute;inset:0;width:100%;height:100%}
+header.site .txt{position:relative;max-width:30rem}
+header.site h1{font-size:1.9rem;line-height:1.15;letter-spacing:-.01em;margin:0 0 .4rem}
+header.site p{margin:0;font-weight:700;color:var(--ink)}
+#sun{transition:none}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:1.5rem;margin:1.25rem 0;box-shadow:6px 6px 0 var(--tan)}
+.chip{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.9rem;letter-spacing:.04em;text-transform:uppercase;color:var(--sun-dark);margin-bottom:.5rem}
+h2{font-size:1.5rem;line-height:1.25;margin:.25rem 0 .75rem}
+h2:focus{outline:3px solid var(--focus);outline-offset:4px;border-radius:4px}
+h3{font-size:1.15rem;margin:1.5rem 0 .5rem}
+p{margin:.5rem 0}
+.choices{display:flex;flex-direction:column;gap:.85rem;margin-top:1.25rem}
+button{font:inherit;cursor:pointer;text-align:left;border-radius:12px;padding:.8rem 1.1rem;min-height:2.9rem;
+  border:2px solid var(--ink);background:var(--ink);color:var(--paper);box-shadow:0 3px 0 var(--sun);touch-action:manipulation}
+button.secondary,.choices button.alt{background:var(--card);color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+button:active{transform:translateY(2px) scale(.98);box-shadow:0 1px 0 var(--sun)}
+.choices button.alt:active{box-shadow:0 1px 0 var(--ink)}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+button[aria-disabled="true"]{cursor:default;box-shadow:none}
+button[aria-disabled="true"]:active{transform:none}
+.opt{background:var(--card);color:var(--ink);box-shadow:0 3px 0 var(--tan)}
+.opt.right{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-border)}
+.opt.wrong{background:var(--bad-bg);color:var(--bad-text);border-color:var(--bad-border)}
+.fb{margin-top:1rem;padding:.75rem 1rem;border-radius:12px;border:2px solid;font-weight:700}
+.fb.ok{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-border)}
+.fb.bad{background:var(--bad-bg);color:var(--bad-text);border-color:var(--bad-border)}
+.note{background:var(--warn-bg);color:var(--warn-text);border:2px solid var(--warn-border);border-radius:12px;padding:.75rem 1rem;margin:.75rem 0;font-weight:700}
+.strip{margin:1rem 0 0}
+.strip h2{font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+.strip ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.35rem .25rem;align-items:center}
+.strip li{display:inline-flex;align-items:center;gap:.3rem;font-size:.85rem;background:var(--card);border:1.5px solid var(--ink);border-radius:999px;padding:.1rem .65rem .1rem .45rem}
+.strip li.cur{background:var(--sky);border-width:2px;font-weight:700}
+.strip .arr{border:0;background:none;padding:0;color:var(--muted)}
+.legend{font-size:.9rem;color:var(--muted);margin-top:.6rem}
+.stats{display:flex;flex-wrap:wrap;gap:.75rem;margin:1rem 0;padding:0;list-style:none}
+.stats li{background:var(--sky);border:2px solid var(--ink);border-radius:12px;padding:.5rem .9rem;font-weight:700}
+.flow{display:block;max-width:100%;height:auto;margin:.5rem auto;background:#fff;border:2px solid var(--ink);border-radius:12px}
+dl.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.75rem;margin:0}
+dl.gloss .term{background:#fff;border:2px solid var(--tan);border-radius:12px;padding:.8rem}
+dl.gloss dt{font-weight:700;color:var(--sun-dark);font-size:1.05rem}
+dl.gloss dd{margin:.25rem 0 0}
+dl.gloss .lang{font-size:.9rem;color:var(--muted)}
+details{margin:.5rem 0}
+summary{cursor:pointer;font-weight:700;padding:.25rem 0}
+footer.lic{background:var(--ink);color:var(--paper);margin-top:2.5rem;padding:1.25rem 0;font-size:.9rem}
+footer.lic .badge{display:inline-block;border:2px solid var(--paper);border-radius:4px;padding:.1rem .5rem;font-weight:700;margin-right:.5rem}
+footer.lic a{color:var(--sky)}
+a{color:#0b3fa8}
+@media (hover:hover){button:not([aria-disabled="true"]):hover{transform:translateY(-1px);background:#0b101a}.choices button.alt:hover,.opt:not(.right):not(.wrong):not([aria-disabled="true"]):hover{background:#fff4d9}button:not([aria-disabled="true"]):hover:active{transform:translateY(2px) scale(.98)}}
+@media (prefers-reduced-motion:no-preference){
+  button{transition:transform 140ms var(--ease),box-shadow 140ms var(--ease),background-color 140ms ease}
+  #sun{transition:transform 700ms var(--ease-io)}
+  #stage>*{transition:opacity 240ms var(--ease),transform 240ms var(--ease)}
+  #stage>:nth-child(2){transition-delay:30ms}#stage>:nth-child(3){transition-delay:60ms}#stage>:nth-child(n+4){transition-delay:90ms}
+  @starting-style{#stage>*{opacity:0;transform:translateY(8px)}}
+}
+@media (max-width:30rem){header.site h1{font-size:1.55rem}.card{padding:1.1rem}}
+
+:root{color-scheme:light}
+html{-webkit-tap-highlight-color:rgba(232,89,12,.2);-webkit-text-size-adjust:100%}
+h1,h2,h3{text-wrap:balance}
+p,dd,li{text-wrap:pretty}
+.stats li{font-variant-numeric:tabular-nums}
+.skip{position:absolute;left:1rem;top:-4rem;z-index:10;background:var(--ink);color:var(--paper);padding:.6rem 1rem;border-radius:10px;font-weight:700;text-decoration:none}
+.skip:focus{top:1rem}
+#stage:focus{outline:none}
+#sun{transform-box:fill-box}
+summary{padding:.65rem 0}
+.card{box-shadow:6px 6px 0 var(--tan),0 14px 28px -10px rgba(70,45,10,.22)}
+.flow,.stats li{border-color:var(--ink)}
+header.site{box-shadow:0 10px 24px -12px rgba(70,45,10,.3)}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+</head>
+<body>
+<a class="skip" href="#stage">Skip to the story</a>
+<div class="wrap">
+  <header class="site">
+    <svg viewBox="0 0 720 180" preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">
+      <g id="sun"><circle cx="600" cy="178" r="34" fill="#e8590c"/></g>
+      <path d="M0 180V152Q120 124 260 152T520 146T720 138V180Z" fill="#1c2433"/>
+    </svg>
+    <div class="txt">
+      <h1>Sipho’s Morning: An Algorithm Story</h1>
+      <p>Grade&nbsp;8 &bull; Coding &bull; Introduction to Algorithms and Flowcharts</p>
+    </div>
+  </header>
+
+  <noscript><div class="note">This activity needs JavaScript. Please turn it on in your browser, or ask your teacher for the printed flowchart version.</div></noscript>
+
+  <nav class="strip" aria-label="Your path so far">
+    <h2>Your path so far</h2>
+    <ol id="strip"></ol>
+    <p class="legend">Shapes: oval = Start/End &bull; rectangle = Process (an action) &bull; diamond = Decision (a Yes/No question)</p>
+  </nav>
+
+  <main id="stage" class="card" aria-live="polite" tabindex="-1"></main>
+</div>
+
+<footer class="lic">
+  <div class="wrap">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener license">
+        <img src="https://creativecommons.org/wp-content/themes/vocabulary-theme/vocabulary/svg/cc/license_badges/big/by_sa.svg"
+       alt="Creative Commons Attribution-ShareAlike 4.0 International licence badge"
+       height="40">
+      </a>
+    <p>
+      
+    
+    This resource is licensed under a Creative Commons Attribution-Share Alike 4.0 International License (CC BY-SA 4.0). You are free to share, copy, redistribute, and adapt this material for any purpose, even commercially, as long as you give appropriate credit and distribute your contributions under the same license.
+    Full licence text: <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">creativecommons.org/licenses/by-sa/4.0</a>.</p>
+    <p>Created by Group CLT, North-West University, DIGD 521EC.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+/* ---------- STORY DATA: each node is a step in the flowchart ---------- */
+const NODES = {
+  start:{type:'start',short:'Start',title:'Meet Sipho',
+    text:['You are about to walk through an algorithm. An algorithm is a set of steps, in order, that gets a job done.',
+          'Sipho is a Grade 8 learner. His job today: get to school on time. Every time you choose, you are making a decision in a flowchart.'],
+    choices:[{label:'Start the algorithm',next:'n1'}]},
+
+  n1:{type:'process',short:'Alarm rings, get up',title:'The alarm rings',
+    text:['Your alarm rings at 06:00. You switch it off and get out of bed.',
+          'This is a Process step: one action, and only one way forward.'],
+    choices:[{label:'Next step',next:'n2'}]},
+
+  n2:{type:'decision',short:'Power on?',title:'Is the power on?',
+    text:['You flip the light switch. Some days there is load-shedding.',
+          'A Decision step asks a Yes/No question. The answer decides which path you follow.'],
+    choices:[{label:'Yes, the lights come on',tag:'Yes',next:'n3a'},
+             {label:'No, it is load-shedding',tag:'No',next:'n3b'}]},
+
+  n3a:{type:'process',short:'Make hot breakfast',title:'Make breakfast',
+    text:['The power is on, so you make toast and a cup of tea.'],
+    choices:[{label:'Next step',next:'q1'}]},
+  n3b:{type:'process',short:'Torch + cold breakfast',title:'Make breakfast in the dark',
+    text:['No power. You use your phone torch and make a bread and peanut butter sandwich instead.'],
+    choices:[{label:'Next step',next:'q1'}]},
+
+  q1:{type:'quiz',title:'Check-in 1',
+    q:'Why is “Is the power on?” drawn as a diamond?',
+    options:['It has a Yes/No answer and leads to different paths.','It is the first step in the algorithm.','It is the last step in the algorithm.'],
+    correct:0,
+    why:'A diamond is the Decision shape. A question with a Yes/No answer sends you down different paths.',
+    next:'n4'},
+
+  n4:{type:'process',short:'Pack school bag',title:'Pack your bag',
+    text:['You pack your books for today’s timetable and zip up your bag.'],
+    choices:[{label:'Next step',next:'n5'}]},
+
+  n5:{type:'decision',short:'Homework in bag?',title:'Is your homework in your bag?',
+    text:['Your teacher will ask for it today. How do you answer this decision?'],
+    choices:[{label:'Yes, I can see it in my bag',tag:'Yes',next:'n6'},
+             {label:'No, I cannot find it',tag:'No',next:'n5b'},
+             {label:'Not sure. I will just leave now.',tag:'Skipped the check',next:'n5x'}]},
+  n5b:{type:'process',short:'Search for homework',title:'Search for your homework',
+    text:['You search your desk and find the homework under a book. You put it in your bag.',
+          'Now you must go back and ask the question again.'],
+    choices:[{label:'Go back to the question',next:'n5'}]},
+  n5x:{type:'process',warn:true,short:'Leave without checking',title:'Oops!',
+    text:['You left without checking. At school your teacher asks for the homework. It is still at home.',
+          'An algorithm only works if you follow the decision step. You must go back to the question.'],
+    choices:[{label:'Go back and check properly',next:'n5'}]},
+
+  n6:{type:'decision',short:'Raining?',title:'Is it raining?',
+    text:['You look out of the window.'],
+    choices:[{label:'Yes, it is raining',tag:'Yes',next:'n6a'},
+             {label:'No, it is dry',tag:'No',next:'n6b'}]},
+  n6a:{type:'process',short:'Take umbrella',title:'Take your umbrella',
+    text:['You take your umbrella and jacket.'],
+    choices:[{label:'Next step',next:'q2'}]},
+  n6b:{type:'process',short:'Put on cap',title:'Put on your cap',
+    text:['It is a sunny morning, so you put on your school cap.'],
+    choices:[{label:'Next step',next:'q2'}]},
+
+  q2:{type:'quiz',title:'Check-in 2',
+    q:'In a flowchart, an arrow goes from “Search for homework” back up to the question “Homework in bag?”. What is this called?',
+    options:['A loop: steps repeat until the answer is Yes.','A sequence: steps never repeat.','An ending: the algorithm stops here.'],
+    correct:0,
+    why:'A loop sends the flow back so a step or question repeats until a condition is met.',
+    next:'n7'},
+
+  n7:{type:'decision',short:'Time to walk?',title:'Do you have time to walk?',
+    text:['It is 06:50. School starts at 07:30. Walking takes 35 minutes, and a taxi takes 10 minutes.'],
+    choices:[{label:'Yes, I have time to walk',tag:'Yes',next:'n7a'},
+             {label:'No, I must hurry',tag:'No',next:'n7b'}]},
+  n7a:{type:'process',short:'Walk to school',title:'Walk to school',
+    text:['You walk to school with your friends.'],
+    choices:[{label:'Next step',next:'q3'}]},
+  n7b:{type:'process',short:'Take a taxi',title:'Take a taxi',
+    text:['You catch a taxi to school.'],
+    choices:[{label:'Next step',next:'q3'}]},
+
+  q3:{type:'quiz',title:'Check-in 3',
+    q:'Which flowchart shape do we use for an action step such as “Walk to school”?',
+    options:['A rectangle (Process)','A diamond (Decision)','An oval (Start/End)'],
+    correct:0,
+    why:'Rectangles show actions. Diamonds show questions. Ovals show where the algorithm starts and ends.',
+    next:'end'},
+
+  end:{type:'end',short:'Arrive at school',title:'You arrive at school on time!',
+    text:['You reached the End of the algorithm.']}
+};
+
+/* ---------- GLOSSARY (translations are a first draft: have them checked by a mother-tongue speaker) ---------- */
+const GLOSSARY = [
+  {en:'Algorithm',def:'A set of steps, in order, that solves a problem.',af:'algoritme',zu:'uchungechunge lwezinyathelo',nso:'tatelano ya dikgato'},
+  {en:'Flowchart',def:'A drawing that shows the steps of an algorithm using shapes and arrows.',af:'vloeidiagram',zu:'umdwebo wokugeleza',nso:'seswantšho sa phallo'},
+  {en:'Step',def:'One action in an algorithm.',af:'stap',zu:'isinyathelo',nso:'kgato'},
+  {en:'Decision',def:'A Yes/No question that chooses which path to follow.',af:'besluit',zu:'isinqumo',nso:'sephetho'},
+  {en:'Loop',def:'Going back to repeat steps until a condition is met.',af:'lus',zu:'ukuphinda',nso:'go boeletša'},
+  {en:'Start / End',def:'Where the algorithm begins and finishes.',af:'begin / einde',zu:'ukuqala / ukuphela',nso:'go thoma / mafelelo'}
+];
+
+/* ---------- STATE ---------- */
+let state;
+function reset(){ state={path:[],quiz:{}}; }
+reset();
+
+const SHAPE_NAME={start:'Start',end:'End',process:'Process',decision:'Decision'};
+const $=(s)=>document.querySelector(s);
+function h(tag,attrs,...kids){
+  const el=document.createElement(tag);
+  for(const k in (attrs||{})){
+    if(k==='class')el.className=attrs[k];
+    else if(k.startsWith('on'))el.addEventListener(k.slice(2),attrs[k]);
+    else el.setAttribute(k,attrs[k]);
+  }
+  kids.flat().forEach(c=>{ if(c!=null) el.append(c.nodeType?c:document.createTextNode(c)); });
+  return el;
+}
+const NS='http://www.w3.org/2000/svg';
+function s(tag,attrs,...kids){
+  const el=document.createElementNS(NS,tag);
+  for(const k in (attrs||{}))el.setAttribute(k,attrs[k]);
+  kids.flat().forEach(c=>{ if(c!=null) el.append(c.nodeType?c:document.createTextNode(c)); });
+  return el;
+}
+
+/* small shape icon: oval / rectangle / diamond */
+function icon(type,w=30,hgt=20){
+  const svg=s('svg',{width:w,height:hgt,viewBox:'0 0 30 20','aria-hidden':'true',focusable:'false'});
+  const base={fill:'#fff',stroke:'#1c2433','stroke-width':'2'};
+  if(type==='start'||type==='end') svg.append(s('rect',{...base,x:2,y:3,width:26,height:14,rx:7,fill:'#fde3b8'}));
+  else if(type==='decision') svg.append(s('polygon',{...base,points:'15,1 29,10 15,19 1,10',fill:'#fff4d6',stroke:'#7a5200'}));
+  else svg.append(s('rect',{...base,x:2,y:3,width:26,height:14}));
+  return svg;
+}
+
+/* ---------- PATH STRIP ---------- */
+function renderStrip(){
+  const ol=$('#strip'); ol.innerHTML='';
+  const last=state.path[state.path.length-1];
+  const p=last&&NODES[last.id].type==='end'?1:Math.min(state.path.length/12,.9);
+  $('#sun').style.transform='translateY(-'+Math.round(p*105)+'px)';
+  state.path.forEach((e,i)=>{
+    const n=NODES[e.id];
+    if(i>0) ol.append(h('li',{class:'arr','aria-hidden':'true'},'→'));
+    const li=h('li',{class:i===state.path.length-1?'cur':''},icon(n.type),h('span',{},n.type==='start'?'Start':SHAPE_NAME[n.type]+': '+n.short));
+    if(i===state.path.length-1) li.setAttribute('aria-current','step');
+    ol.append(li);
+  });
+}
+
+/* ---------- NAVIGATION ---------- */
+function go(id,focus=true){
+  const n=NODES[id];
+  if(n.type!=='quiz') state.path.push({id,via:null});
+  renderStrip();
+  render(id);
+  document.title=n.title+' – Sipho’s Morning';
+  if(focus){ const hd=$('#stage h2'); if(hd) hd.focus(); }
+  window.scrollTo({top:0});
+}
+function choose(c){
+  const last=state.path[state.path.length-1];
+  if(last) last.via=c.tag||null;
+  go(c.next);
+}
+function stepNumber(){ return state.path.length; }
+
+/* ---------- RENDER ---------- */
+function render(id){
+  const n=NODES[id], stage=$('#stage'); stage.innerHTML='';
+  if(n.type==='quiz') return renderQuiz(id,n,stage);
+  if(n.type==='end') return renderEnd(n,stage);
+
+  const label = n.type==='start' ? 'Start' : 'Step '+stepNumber()+' – '+SHAPE_NAME[n.type];
+  stage.append(h('div',{class:'chip'},icon(n.type,36,24),label));
+  stage.append(h('h2',{tabindex:'-1'},n.title));
+  if(n.warn) stage.append(h('div',{class:'note',role:'note'},'⚠ Wrong choice!'));
+  n.text.forEach(t=>stage.append(h('p',{},t)));
+  const box=h('div',{class:'choices'});
+  n.choices.forEach((c,i)=>{
+    box.append(h('button',{type:'button',class:(n.type==='decision'&&i>0)?'alt':'',onclick:()=>choose(c)},c.label));
+  });
+  stage.append(box);
+}
+
+function renderQuiz(id,n,stage){
+  const quizIds=Object.keys(NODES).filter(k=>NODES[k].type==='quiz');
+  const st=state.quiz[id]||(state.quiz[id]={tries:0,correct:false});
+  stage.append(h('div',{class:'chip'},'Check-in '+(quizIds.indexOf(id)+1)+' of '+quizIds.length));
+  stage.append(h('h2',{tabindex:'-1'},n.q));
+  const box=h('div',{class:'choices'});
+  const fb=h('div',{role:'status'});
+  const nextWrap=h('div',{class:'choices'});
+  n.options.forEach((o,i)=>{
+    const b=h('button',{type:'button',class:'opt'},o);
+    b.addEventListener('click',()=>{
+      if(st.correct) return;
+      st.tries++;
+      if(i===n.correct){
+        st.correct=true;
+        b.classList.add('right'); b.prepend('✔ ');
+        box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-disabled','true'));
+        fb.className='fb ok'; fb.textContent='✔ Correct! '+n.why;
+        nextWrap.append(h('button',{type:'button',onclick:()=>go(n.next)},'Continue the story'));
+      } else {
+        if(!b.classList.contains('wrong')){ b.classList.add('wrong'); b.prepend('✘ '); }
+        fb.className='fb bad'; fb.textContent='✘ Not quite. Read the question again and try another answer.';
+      }
+    });
+    box.append(b);
+  });
+  stage.append(box,fb,nextWrap);
+}
+
+function renderEnd(n,stage){
+  stage.append(h('div',{class:'chip'},icon('end',36,24),'End'));
+  stage.append(h('h2',{tabindex:'-1'},n.title));
+  n.text.forEach(t=>stage.append(h('p',{},t)));
+
+  const seen={}; let decisions=0, loops=0;
+  state.path.forEach(e=>{
+    if(NODES[e.id].type==='decision'){ decisions++; seen[e.id]=(seen[e.id]||0)+1; if(seen[e.id]>1) loops++; }
+  });
+  const quizIds=Object.keys(NODES).filter(k=>NODES[k].type==='quiz');
+  const score=quizIds.filter(q=>state.quiz[q]&&state.quiz[q].correct&&state.quiz[q].tries===1).length;
+  stage.append(h('ul',{class:'stats'},
+    h('li',{},'Steps in your path: '+state.path.length),
+    h('li',{},'Decisions you made: '+decisions),
+    h('li',{},'Loops you went through: '+loops),
+    h('li',{},'Check-ins right first try: '+score+' of '+quizIds.length)));
+
+  stage.append(h('h3',{},'Your path as a flowchart'));
+  stage.append(buildFlow());
+  const det=h('details',{},h('summary',{},'Text version of your flowchart'));
+  const ol=h('ol',{});
+  state.path.forEach((e,i)=>{
+    const nn=NODES[e.id];
+    ol.append(h('li',{},SHAPE_NAME[nn.type]+': '+nn.short+(e.via?' (you answered: '+e.via+')':'')));
+  });
+  det.append(ol); stage.append(det);
+
+  stage.append(h('h3',{},'Glossary'));
+  const dl=h('dl',{class:'gloss'});
+  GLOSSARY.forEach(g=>{
+    dl.append(h('div',{class:'term'},
+      h('dt',{},g.en),
+      h('dd',{},g.def),
+      h('dd',{class:'lang'},h('span',{lang:'af',translate:'no'},'Afrikaans: '+g.af)),
+      h('dd',{class:'lang'},h('span',{lang:'zu',translate:'no'},'isiZulu: '+g.zu)),
+      h('dd',{class:'lang'},h('span',{lang:'nso',translate:'no'},'Sepedi: '+g.nso))));
+  });
+  stage.append(dl);
+
+  stage.append(h('div',{class:'choices'},
+    h('button',{type:'button',class:'alt',onclick:()=>{reset();go('start');}},'Play again and try different choices')));
+}
+
+/* ---------- FLOWCHART DRAWING (SVG from the learner's path) ---------- */
+function buildFlow(){
+  const W=340, cx=170, gap=40, ovalH=44, rectH=44, diaH=84;
+  const hOf=t=>t==='decision'?diaH:44;
+  let y=10; const items=[];
+  state.path.forEach(e=>{ const n=NODES[e.id]; items.push({n,e,y,h:hOf(n.type)}); y+=hOf(n.type)+gap; });
+  const H=y-gap+10;
+  const svg=s('svg',{class:'flow',viewBox:'0 0 '+W+' '+H,width:W,role:'img',
+    'aria-label':'Flowchart of your path, from Start to End. A text version follows below.'});
+  svg.append(s('title',{},'Your path as a flowchart'));
+  svg.append(s('defs',{},s('marker',{id:'ah',viewBox:'0 0 10 10',refX:'9',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'},
+    s('path',{d:'M0,0 L10,5 L0,10 z',fill:'#1b1b1b'}))));
+  items.forEach((it,i)=>{
+    const {n,y:yy,h:hh}=it;
+    const midY=yy+hh/2;
+    if(n.type==='start'||n.type==='end')
+      svg.append(s('rect',{x:cx-100,y:yy,width:200,height:hh,rx:22,fill:'#fde3b8',stroke:'#1c2433','stroke-width':2}));
+    else if(n.type==='decision')
+      svg.append(s('polygon',{points:[cx,yy,cx+140,midY,cx,yy+hh,cx-140,midY].join(' '),fill:'#fff4d6',stroke:'#7a5200','stroke-width':2}));
+    else
+      svg.append(s('rect',{x:cx-150,y:yy,width:300,height:hh,fill:'#fff',stroke:'#1c2433','stroke-width':2}));
+    svg.append(s('text',{x:cx,y:midY+5,'text-anchor':'middle','font-size':15,'font-family':'Atkinson Hyperlegible,Verdana,Arial,sans-serif',fill:'#1b1b1b','font-weight':n.type==='decision'?'bold':'normal'},n.short));
+    if(i<items.length-1){
+      const y1=yy+hh, y2=items[i+1].y;
+      svg.append(s('line',{x1:cx,y1:y1,x2:cx,y2:y2-2,stroke:'#1b1b1b','stroke-width':2,'marker-end':'url(#ah)'}));
+      if(it.e.via) svg.append(s('text',{x:cx+10,y:y1+(gap/2)+5,'font-size':14,'font-family':'Atkinson Hyperlegible,Verdana,Arial,sans-serif',fill:'#1b1b1b','font-weight':'bold'},it.e.via));
+    }
+  });
+  return svg;
+}
+
+go('start',false);
+</script>
+</body>
+</html>
