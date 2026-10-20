@@ -235,12 +235,12 @@ const NODES = {
 
 /* ---------- GLOSSARY (translations are a first draft: have them checked by a mother-tongue speaker) ---------- */
 const GLOSSARY = [
-  {en:'Algorithm',def:'A set of steps, in order, that solves a problem.',af:'algoritme',zu:'uchungechunge lwezinyathelo',nso:'tatelano ya dikgato'},
-  {en:'Flowchart',def:'A drawing that shows the steps of an algorithm using shapes and arrows.',af:'vloeidiagram',zu:'umdwebo wokugeleza',nso:'seswantšho sa phallo'},
-  {en:'Step',def:'One action in an algorithm.',af:'stap',zu:'isinyathelo',nso:'kgato'},
-  {en:'Decision',def:'A Yes/No question that chooses which path to follow.',af:'besluit',zu:'isinqumo',nso:'sephetho'},
-  {en:'Loop',def:'Going back to repeat steps until a condition is met.',af:'lus',zu:'ukuphinda',nso:'go boeletša'},
-  {en:'Start / End',def:'Where the algorithm begins and finishes.',af:'begin / einde',zu:'ukuqala / ukuphela',nso:'go thoma / mafelelo'}
+  {en:'Algorithm',def:'A set of steps, in order, that solves a problem.',af:'algoritme',tn:'tatelano ya megato',nso:'tatelano ya dikgato'},
+  {en:'Flowchart',def:'A drawing that shows the steps of an algorithm using shapes and arrows.',af:'vloeidiagram',tn:'setshwantsho sa megato',nso:'seswantšho sa phallo'},
+  {en:'Step',def:'One action in an algorithm.',af:'stap',tn:'mogato',nso:'kgato'},
+  {en:'Decision',def:'A Yes/No question that chooses which path to follow.',af:'besluit',tn:'tshwetso',nso:'sephetho'},
+  {en:'Loop',def:'Going back to repeat steps until a condition is met.',af:'lus',tn:'go boeletsa',nso:'go boeletša'},
+  {en:'Start / End',def:'Where the algorithm begins and finishes.',af:'begin / einde',tn:'go simolola / bofelo',nso:'go thoma / mafelelo'}
 ];
 
 /* ---------- STATE ---------- */
@@ -391,7 +391,7 @@ function renderEnd(n,stage){
       h('dt',{},g.en),
       h('dd',{},g.def),
       h('dd',{class:'lang'},h('span',{lang:'af',translate:'no'},'Afrikaans: '+g.af)),
-      h('dd',{class:'lang'},h('span',{lang:'zu',translate:'no'},'isiZulu: '+g.zu)),
+      h('dd',{class:'lang'},h('span',{lang:'tn',translate:'no'},'Setswana: '+g.tn)),
       h('dd',{class:'lang'},h('span',{lang:'nso',translate:'no'},'Sepedi: '+g.nso))));
   });
   stage.append(dl);
